@@ -1,51 +1,181 @@
-body{
-    width: 80%;
-    margin:auto;
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+    width: 1em;
+    height: 1em;
+  }
+  
+  .svg-icon path,
+  .svg-icon polygon,
+  .svg-icon rect {
+    fill: #4691f6;
+  }
+  
+  .svg-icon circle {
+    stroke: #4691f6;
+    stroke-width: 1;
+  }
+
+
+  
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
 }
 
-h1{
-    text-align: center;
-    font-family: sans-serif;
+
+.accordionMain {
+    display: flex;
+    width: 70%;
+    margin: 100px auto;
+    list-style: none;
 }
+
+
+/* 
+    This following text is the one that creates the accordion style
+*/
+
+.mainContent{
+  margin-bottom: 75px;
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+
+.daySelector{
+    padding-top: 50px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 2%;
+    list-style: none;
+}
+
+.ulContent{
+    width: 80%;
+    
+    margin: 25px auto;
+    list-style: none;
+}
+
+.ulContent > li{
+    margin-top: 25px;
+}
+
+li{
+    border: 1px solid black;
+    padding: 10px;
+    
+}
+
+p{
+    font-size: 20px;
+    
+}
+
 
 .btnContainer{
-    text-align: center;
+    width: 33%;
+    margin: auto;
 }
 
 
-#accordion li{
-    background-color: #f9f9f9;
-    list-style: none;
-    margin-bottom: 10px;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-#accordion li > label{
-    font-family: sans-serif;
-    font-size: 18px;
-    font-weight: bold;
+#btnPopup{
+    background-color: transparent;
     display: block;
+    text-align: center;
+    font-size: 20px;
+    border: 2px dashed #4691f6;
+    padding: 2px 5px;
+    width: fit-content;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+
+ .blur{
+    filter: blur(5px);
+ }
+
+
+
+
+ .stopUser{
+    user-select: none;
+    pointer-events: none;
+
+ }
+
+
+
+
+.popup{
+    font-family: sans-serif;
+    background-color: white;
+    border: 1px solid grey;
+    padding: 10px 30px 10px 30px;
+    border-radius: 10px;
+    position: fixed;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+    visibility: hidden;
+  }
+  
+  .popup button {
+    display: block;
+    width: 50%;
+    margin: 15px auto;
+  
+  }
+
+  .popup input{
+    border: 2px solid black;
+    border-radius: 2px;
+  }
+   
+  .popup svg{
+    font-size: 75px;
+    display: block;
+    width: 50%;
+    margin: auto;
+  }
+  
+  .popup h2{
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-weight: bold;
+  }
+  
+  .popup p{
+    margin-bottom: 10px;
+  }
+  
+  .popupActive{
+    visibility: visible;
+    top: 50%;
+    transition: 0.45s;
+  }
+
+
+  
+  .footer{
+    position: fixed;
+    bottom: 0;
     width: 100%;
-}
+    height: 60px;
+    background-color: slategray;
+  }
 
-#accordion li:hover{
-    background-color: #ececec ;
-}
-
-
-
-#accordion label + input[type="radio"]{
-    display: none;
-}
-
-#accordion .content{
-    height: 0;
-    overflow: hidden;
-    transition: height 0.2s ease-out;
-}
-
-#accordion label + input[type="radio"]:checked + .content{
-    height: 100%;
-}
-
+  .footer p{
+    margin-top: 20px;
+    text-align: center;
+    color: white;
+  }

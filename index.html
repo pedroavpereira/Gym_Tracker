@@ -1,235 +1,367 @@
 <!doctype html>
 <html>
     <head>
-        <title>Workout Planner</title>
+        <title>Accordion Using HTML and CSS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
 
-        <link rel="stylesheet" href="style/style.css">
+        <link rel="stylesheet" href="style.css">  
 
-        
     </head>
     <body>
-        <h1>Workout Sheet</h1>
-        <div class="btnContainer">
-            <input type="text" id="addInput">
-            <button id="btnAdd">Add</button>
-            <button id="btnRemove">Clear</button>
-            <button id="btnSave">Save</button>
+
+        
+
+    <div class="mainContent">   
+        <div>            
+            <ul class="daySelector">
+            </ul>
         </div>
 
+        <div>
+            <ul class="ulContent">
 
-        <ul id="accordion">
-        </ul>
+            </ul>
+        </div>
 
+        <div class="btnPopupDiv">
+            <button id="btnPopup">Add exercise</button>
+        </div>
+        
+    </div>  
+    
+    <div class="popup">
+        <svg class="svg-icon" viewBox="0 0 20 20">
+            <path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path>
+        </svg>
+        <h2>Add new exercise</h2>
+        <p>Exercise name</p>
+        <input type="text" id="addInput">
+        <button id="btnAdd">ADD</button>
+    </div>
+        
+       
 
-
-
+        <footer>
+            <div class="footer">
+                <p>Web Application created by Pedro Pereira</p>
+            </div>
+        </footer>
 
 
         <script>
-            'use strict'
-            var $inputAdd = document.getElementById("addInput");
-            var $btnAdd = document.getElementById("btnAdd");
-            var $btnRemove = document.getElementById("btnRemove");
-            var $btnSave = document.getElementById("btnSave");
-
-            var exerciseNameArr = new Array;
-            var exerciseVolumeArr = new Array;
-            var inputNum = 1;
-            var numEx = 0;
+             var $daySelector = document.querySelector(".daySelector");
+             var $contentUl = document.querySelector(".ulContent");
+             var $mainContentDiv = document.querySelector(".mainContent");
+             var $body = document.querySelector("body");
+             var $popupDiv = document.querySelector(".popup");
 
 
-            $btnAdd.addEventListener("click", exerciseAdd);
-            $btnRemove.addEventListener("click", deleteExercises);
-            $btnSave.addEventListener("click", saveVolumeValues);
+             var $addInput = document.getElementById("addInput");
+             var $btnPopup = document.getElementById("btnPopup");
+             var $btnAdd = document.getElementById("btnAdd");
+             // var $btnRemove = document.getElementById("btnRemove");
+
+             var day = 0;
+
+             var dataArr = new Array;
 
 
-
-            verifyLocalStorage();
-            createStoragedInitial(exerciseNameArr,exerciseVolumeArr);
-
-
-
-           
+            $btnPopup.addEventListener("click", popupDisplay);
+            $btnAdd.addEventListener("click" , addExerciseBtnClicked);
 
 
 
-          
-            function createStoragedInitial(exArr,volumeArr){
-                createStoragedExercises(exArr);
-                initialUpdateVolume(volumeArr);
+             initialLoad();
+
+
+             function initialLoad(){
+                verifyLocalStorage();
+                daySelectorConstructor();
+                mainConstructor();
+             }
+
+
+             function verifyLocalStorage(){
+                if(localStorage.getItem("exercisesNames")){
+                    var localStorageTemp = localStorage.getItem("exercisesNames");
+                    dataArr = JSON.parse(localStorageTemp);
+                }
+             }
+
+
+             function jsonUpdateLocalStorage(){
+                var localStorageString = JSON.stringify(dataArr);
+                localStorage.setItem("exercisesNames",localStorageString);
+             }
+
+
+
+             function popupDisplay(){
+                $popupDiv.classList.add("popupActive");
+                $mainContentDiv.classList.add("blur");
+                $mainContentDiv.classList.add("stopUser");
+                setTimeout(function(){$addInput.focus()},455);
+             }
+
+
+             //TODO: Close PopUp by clocking outside of it
+
+             function closePopup(){
                 
-            }
+                $mainContentDiv.classList.remove("stopUser");
+                $mainContentDiv.classList.remove("blur");
+                $popupDiv.classList.remove("popupActive");
+             }
 
-            function createStoragedExercises(arr){
-                for (var i=0; i < arr.length; i++){
-                    mainConstructor(arr[i]);
-                }
-            }
 
-            function initialUpdateVolume(arr){
-                var $inputValues = document.querySelectorAll(".inputValue");
-                for(var i = 0; i < arr.length; i++){
-                    $inputValues[i].value = arr[i];
-                }
-            }
+             function addExerciseBtnClicked(){
+                addNewExercise();
+                closePopup();
+             }
 
 
 
 
 
+             function addNewDay(){
+                var newDay = new Object;
+                newDay.name = "Day " + (dataArr.length + 1);
+                newDay.exercises = new Array;
+                dataArr.push(newDay);
+                jsonUpdateLocalStorage();
+             }
 
 
-            function verifyLocalStorage(){
-                if(localStorage.getItem("exerciseNames")){
-                    var localStorageExStr = localStorage.getItem("exerciseNames")
-                    exerciseNameArr = localStorageExStr.split(",");
-                }
-                if(localStorage.getItem("exerciseVolume")){
-                var localStorageVolumeStr = localStorage.getItem("exerciseVolume");
-                    exerciseVolumeArr = localStorageVolumeStr.split(",");
-                }
-            }
-
-            function updateLocalStorage(newExerciseName){
-                if(newExerciseName !== undefined){
-                exerciseNameArr.push(newExerciseName);
-                }
-
-                localStorage.setItem("exerciseNames", exerciseNameArr);
-                localStorage.setItem("exerciseVolume", exerciseVolumeArr);
-            }
-
-            function saveVolumeValues(){
-                var $inputValue = document.querySelectorAll(".inputValue")
-                for(var i = 0; i < $inputValue.length; i++){
-                    exerciseVolumeArr[i] = $inputValue[i].value;
-                }
-                updateLocalStorage();
+             function addNewExercise(){
+                if ($addInput.value){
+                    var newExercise = {name:"",sets:"0",reps:"0",weight:"0"};
+                    newExercise.name = $addInput.value;
+                    $addInput.value = "";
+                    dataArr[day].exercises.push(newExercise);
+                    jsonUpdateLocalStorage();
+                    mainConstructor();
+                } 
             }
 
 
-
-
-            function exerciseAdd(){
-            var typedName = $inputAdd.value
-                if(typedName){
-                    mainConstructor(typedName);
-                    updateLocalStorage(typedName);
-                    $inputAdd.value = "";
-                }
-            }
-
-            function deleteExercises(){
-                var $exerciseUl = document.getElementById("accordion");
-                $exerciseUl.innerHTML = "";
-                $inputAdd.value= "";
-                localStorage.clear();
-                exerciseNameArr = [];
-                numEx = 0;
-            }
-
-
-
-
-
-
-            function mainConstructor(exerciseName){
-                var $exerciseUl = document.getElementById("accordion");
-
-            //Create a new Li tag
-                var newLi = liConstructor();
-
-            //Create a label and a radio input and add to the new li
-                newLi = radioConstructor(newLi, exerciseName);
-
-            //Create a new contentDiv and add to the new li
-                newLi = contentConstructor(newLi);
+            function saveData(){
+                var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
+                var $dataInputs = $contentUl.querySelectorAll("input[type='number']");
+                var newArr = new Array;
                 
-            //Append the newly created li to the document    
-                $exerciseUl.appendChild(newLi);
+                console.log(newExercise);
+                
+                for(var i = 0; i <$labelNames.length; i++){
+                    var newExercise = {name:"", sets:"", reps:"",weight:""};
+
+                    newExercise.name = $labelNames[i].textContent;
+
+                    newExercise.sets = $dataInputs[i*3].value;
+ 
+                    newExercise.reps = $dataInputs[i*3+1].value;
+ 
+                    newExercise.weight = $dataInputs[i*3+2].value;
+
+                    newArr.push(newExercise);
+
+                }
+                dataArr[day].exercises = newArr;
+                jsonUpdateLocalStorage();
+
             }
 
 
-            function liConstructor(){
+
+
+            
+             function clearContent(){
+                while($contentUl.firstChild){
+                    $contentUl.removeChild($contentUl.firstChild);
+                }
+             }
+
+             function clearDaySelector(){
+                while($daySelector.firstChild){
+                    $daySelector.removeChild($daySelector.firstChild);
+                }
+             }
+             
+
+
+
+// TODO: Separar Add day do objeto
+
+             function daySelectorConstructor(){
+                for(var i = 0; i < dataArr.length + 1; i++){
+                    individualDayConstructor(i);
+                }
+             }
+
+             function individualDayConstructor(dayID){
+                var $ulDaySelector = document.querySelector(".daySelector");
+                var newElement = liConstructor();
+                newElement = addOnClick(newElement, dayID);
+                newElement = paragraphConstructor(newElement,dayID);
+                $ulDaySelector.appendChild(newElement);
+             }
+
+             function paragraphConstructor(newElement,dayID){
+                var newParagraph = document.createElement("p");
+                if(dataArr[dayID]){
+                    newParagraph.textContent = dataArr[dayID].name;
+                }
+                else{
+                    newParagraph.textContent = "+";
+                }
+                
+                newElement.appendChild(newParagraph);
+                return newElement;
+             }
+
+             function addOnClick(newElement, dayID){
+                newElement.setAttribute("onclick","changeSelectedDay("+ dayID + ")");
+                return newElement;
+             }
+
+
+
+
+
+
+            
+             function changeSelectedDay(dayID){
+                if(dayID + 1 > dataArr.length){
+                    addNewDay();
+                    clearDaySelector();
+                    daySelectorConstructor();
+                    return;
+                }
+                day = dayID;
+                mainConstructor();
+             }
+
+
+
+
+
+
+             function mainConstructor(){
+
+                clearContent();
+
+                if(!dataArr[day].exercises.length){
+                    alert("Empty Day");
+                    return;
+                }
+
+                for(var i = 0 ; i < dataArr[day].exercises.length ; i++){
+                    var newLi = liConstructor();
+                    var newLabel = labelConstructor (i);
+                    newLi.appendChild(newLabel);
+                    var newRadio = radioConstructor();
+                    newLi.appendChild(newRadio);
+                    newContentDiv = contentDivConstructor(i);
+                    newLi.appendChild(newContentDiv);
+
+                    $contentUl.appendChild(newLi);
+
+                    
+                }
+
+             }
+
+
+
+
+             function liConstructor(){
                 var newLi = document.createElement("li");
                 return newLi;
-            }
+             }
 
 
-            function radioConstructor(newLi, exerciseName){
+// LABEL CONSTRUCTOR AND RADIO CONTRUCTOR NEED TO HAVE INCREMENTAL ID
 
-                var newId = "radio" + numEx;
-            //Create a new Label with the name and the "for" attribute with a new number    
+             function labelConstructor(dataIndex){
+                var id;
                 var newLabel = document.createElement("label");
-                newLabel.innerHTML = exerciseName + "<span>&#x3e;</span";
-                
-                newLabel.setAttribute("for", newId);
-                
-            //Add the new label to the new Li
-                newLi.appendChild(newLabel);
-                
-            //Create a new Radio input with the name "accordion" and the same id as the label previously created
+                newLabel.textContent = dataArr[day].exercises[dataIndex].name;
+                newLabel.setAttribute("for", id);
+                newLabel.setAttribute("class", "exerciseNameLabel");
+                id++;
+                return newLabel;
+             }
+
+
+
+
+             function radioConstructor(){
+                var id = new Number;
                 var newRadio = document.createElement("input");
                 newRadio.setAttribute("type","radio");
                 newRadio.setAttribute("name","accordion");
-                newRadio.setAttribute("id", newId);
+                newRadio.setAttribute("id", id);
+                id++;
                 newRadio.checked = true;
-
-            //Add new Radio input to the List (now should contain a label and a radio input)
-                newLi.appendChild(newRadio);
- 
-
-                numEx++;
-
-                return newLi;
-            }
+                return newRadio;
+             }
 
 
 
-            function contentConstructor(newLi){
+
+             function contentDivConstructor(dataIndex){
                 var contentDiv = document.createElement("div");
                 contentDiv.classList.add("content");
 
+
                 for(var i = 0; i<3;i++){
 
-                    var newId = "valueId" + inputNum;
-                    inputNum++;
-                
-                    var newInput = document.createElement("input");
-                    newInput.setAttribute("type","number");
-                    newInput.setAttribute("class", "inputValue");
-                    newInput.setAttribute("id", newId);
-                    
 
                     var newLabel = document.createElement("label");
 
+
+                    var newInput = document.createElement("input");
+                    newInput.setAttribute("type","number");
+                    newInput.setAttribute("class", "inputValue");
+                    newInput.addEventListener("input",saveData);
+
+
+                    
                     switch(i){
                         case 0: 
                             newLabel.textContent = "Sets";
+                            newInput.value = dataArr[day].exercises[dataIndex].sets;
                             break;
                         case 1:
                             newLabel.textContent = "Reps";
+                            newInput.value = dataArr[day].exercises[dataIndex].reps;
                             break;
                         case 2:
                             newLabel.textContent = "Weight";
+                            newInput.value = dataArr[day].exercises[dataIndex].weight;
                             break;
                     }
 
+            
                     contentDiv.appendChild(newLabel);
                     contentDiv.appendChild(newInput);
 
-                }
-                
-                newLi.appendChild(contentDiv);
+                    
 
-                return newLi;
-            }
+                }
+
+                return contentDiv;
+             }
+             
+             //TODO: Remove Exercise button
+             //TODO: Swap Exercise button
+             //TODO: Add exit button for popup
 
 
 
         </script>
-         
-        
     </body>
+
+
+
 </html>
