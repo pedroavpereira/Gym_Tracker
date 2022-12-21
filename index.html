@@ -120,14 +120,19 @@
                 closePopup();
              }
 
-
-
              function addNewDay(){
+                createNewDayObject();
+                clearDaySelector();
+                daySelectorConstructor();
+                jsonUpdateLocalStorage();
+             }
+
+
+             function createNewDayObject(){
                 var newDay = new Object;
                 newDay.name = "Day " + (dataArr.length + 1);
                 newDay.exercises = new Array;
                 dataArr.push(newDay);
-                jsonUpdateLocalStorage();
              }
 
 
@@ -197,35 +202,56 @@
 // TODO: Separar Add day do objeto
 
              function daySelectorConstructor(){
-                for(var i = 0; i < dataArr.length + 1; i++){
-                    individualDayConstructor(i);
-                }
-             }
-
-             function individualDayConstructor(dayID){
                 var $ulDaySelector = document.querySelector(".daySelector");
-                var newElement = liConstructor();
-                newElement = addOnClick(newElement, dayID);
-                newElement = paragraphConstructor(newElement,dayID);
-                $ulDaySelector.appendChild(newElement);
+                for(var i = 0; i < dataArr.length; i++){
+                    var newDay = individualDayConstructor(i);
+                    $ulDaySelector.appendChild(newDay);
+                }
+                var addNewDayLi = addNewDayLiConstructor();
+                $ulDaySelector.appendChild(addNewDayLi);
              }
 
-             function paragraphConstructor(newElement,dayID){
-                var newParagraph = document.createElement("p");
-                if(dataArr[dayID]){
-                    newParagraph.textContent = dataArr[dayID].name;
-                }
-                else{
-                    newParagraph.textContent = "+";
-                }
-                
+
+             function addNewDayLiConstructor(){
+                var newElement = liConstructor();
+                var newParagraph = paragraphConstructor();
+                newParagraph = addTextContentToParagraph(newParagraph, "+");
+                newParagraph = createNewEventListener(newParagraph, "click", addNewDay);
                 newElement.appendChild(newParagraph);
                 return newElement;
              }
 
+             function individualDayConstructor(dayID){ 
+                var newElement = liConstructor();
+                newElement = addOnClick(newElement, dayID);
+                var newParagraph = paragraphConstructor();
+                newParagraph = addTextContentToParagraph(newParagraph , dataArr[dayID].name);
+                newElement.appendChild(newParagraph);
+                return newElement;
+             }
+
+
+             function paragraphConstructor(){
+                var newParagraph = document.createElement("p");
+                return newParagraph;
+             }
+
+             function addTextContentToParagraph(paragraph, newTextContent){
+                paragraph.textContent = newTextContent;
+                return paragraph;
+             }
+
+
+
              function addOnClick(newElement, dayID){
                 newElement.setAttribute("onclick","changeSelectedDay("+ dayID + ")");
                 return newElement;
+             }
+
+
+             function createNewEventListener(element , type , functionName){
+                element.addEventListener(type, functionName);
+                return element;
              }
 
 
@@ -235,12 +261,6 @@
 
             
              function changeSelectedDay(dayID){
-                if(dayID + 1 > dataArr.length){
-                    addNewDay();
-                    clearDaySelector();
-                    daySelectorConstructor();
-                    return;
-                }
                 day = dayID;
                 mainConstructor();
              }
