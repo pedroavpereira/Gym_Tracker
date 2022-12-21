@@ -133,6 +133,7 @@
              }
 
 
+
              function addNewExercise(){
                 if ($addInput.value){
                     var newExercise = {name:"",sets:"0",reps:"0",weight:"0"};
@@ -146,6 +147,12 @@
 
 
             function saveData(){
+                updateArray();
+                jsonUpdateLocalStorage();
+            }
+
+
+            function updateArray(){
                 var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
                 var $dataInputs = $contentUl.querySelectorAll("input[type='number']");
                 var newArr = new Array;
@@ -167,7 +174,6 @@
 
                 }
                 dataArr[day].exercises = newArr;
-                jsonUpdateLocalStorage();
 
             }
 
