@@ -29,13 +29,17 @@ SVG Icons - svgicons.sparkk.fr
 }
 
 
-.accordionMain {
-    display: flex;
-    width: 70%;
-    margin: 100px auto;
-    list-style: none;
+#accordion .content{
+  padding: 0 10px;
+  line-height: 26px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
 }
 
+#accordion label + input[type="radio"]:checked + .content{
+  max-height: 400px;
+}
 
 /* 
     This following text is the one that creates the accordion style
