@@ -163,10 +163,11 @@
             function updateArray(){
                 var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
                 var $dataInputs = $contentUl.querySelectorAll("input[type='number']");
+                console.log($dataInputs);
                 var newArr = new Array;
                 
                 
-                for(var i = 0; i <$labelNames.length; i++){
+                for(var i = 0; i < $labelNames.length; i++){
                     var newExercise = {name:"", sets:"", reps:"",weight:""};
 
                     newExercise.name = $labelNames[i].textContent;
@@ -176,8 +177,9 @@
                     newExercise.reps = $dataInputs[i*3+1].value;
  
                     newExercise.weight = $dataInputs[i*3+2].value;
-
+                    console.log(newExercise);
                     newArr.push(newExercise);
+                    console.log(newArr);
 
                 }
                 dataArr[day].exercises = newArr;
@@ -286,12 +288,16 @@
 
                 for(var i = 0 ; i < dataArr[day].exercises.length ; i++){
                     var newLi = liConstructor();
-                    var newLabel = labelConstructor (i);
-                    var newRadio = radioConstructor();
+                    var newLabel = labelConstructor ();
+                    var newRadio = inputConstructor();
+                    
                     accordionCreator(newLabel,newRadio,i);
+
                     newLi.appendChild(newLabel);
                     newLi.appendChild(newRadio);
+
                     newContentDiv = contentDivConstructor(i);
+
                     newLi.appendChild(newContentDiv);
 
                     $contentUl.appendChild(newLi);
@@ -312,36 +318,35 @@
 
 // LABEL CONSTRUCTOR AND RADIO CONTRUCTOR NEED TO HAVE INCREMENTAL ID
 
-             function labelConstructor(dataIndex){
+             function labelConstructor(){
                 var newLabel = document.createElement("label");
-                newLabel.textContent = dataArr[day].exercises[dataIndex].name;
                 return newLabel;
              }
 
 
-
-
-             function radioConstructor(){
+             function inputConstructor(){
                 var newRadio = document.createElement("input");
-                newRadio.checked = true;
                 return newRadio;
              }
 
 
 
              function accordionCreator(label, radio, id){
-                labelAtributesAddition(label,id);
-                radioAttributesAddition(radio,id);
+                accordionLabelAtributesAddition(label,id);
+                accordionRadioAttributesAddition(radio,id);
             }
 
-            function labelAtributesAddition(label, id){
+            function accordionLabelAtributesAddition(label, id){
                 label.setAttribute("for", id);
+                label.classList.add("exerciseNameLabel");
+                label.textContent = dataArr[day].exercises[id].name;
             }
 
-            function radioAttributesAddition(radio, id){
+            function accordionRadioAttributesAddition(radio, id){
                 radio.setAttribute("type","radio");
                 radio.setAttribute("name","accordion");
                 radio.setAttribute("id", id);
+                radio.checked = true;
             }
 
 
@@ -353,14 +358,12 @@
                 for(var i = 0; i<3;i++){
 
 
-                    var newLabel = document.createElement("label");
+                    var newLabel = labelConstructor();
+                    var newInput = inputConstructor();
 
-
-                    var newInput = document.createElement("input");
                     newInput.setAttribute("type","number");
                     newInput.setAttribute("class", "inputValue");
-                    //newInput.addEventListener("input",saveData);
-                    createNewEventListener(newInput,"input",saveData);
+                    newInput.addEventListener("input",saveData);
 
 
                     
