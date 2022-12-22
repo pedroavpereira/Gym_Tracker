@@ -136,15 +136,21 @@
              }
 
 
-
              function addNewExercise(){
-                if ($addInput.value){
+                if ($addInput.value){{
+                createNewExerciseObject();
+                jsonUpdateLocalStorage();
+                clearContent();
+                mainConstructor();
+                }
+             }
+
+             function createNewExerciseObject(){
+                
                     var newExercise = {name:"",sets:"0",reps:"0",weight:"0"};
                     newExercise.name = $addInput.value;
                     $addInput.value = "";
                     dataArr[day].exercises.push(newExercise);
-                    jsonUpdateLocalStorage();
-                    mainConstructor();
                 } 
             }
 
@@ -262,6 +268,7 @@
             
              function changeSelectedDay(dayID){
                 day = dayID;
+                clearContent();
                 mainConstructor();
              }
 
@@ -272,7 +279,7 @@
 
              function mainConstructor(){
 
-                clearContent();
+                
 
                 if(!dataArr[day].exercises.length){
                     alert("Empty Day");
