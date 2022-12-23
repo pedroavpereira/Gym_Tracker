@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
 
-        <link rel="stylesheet" href="style.css">  
+        <link rel="stylesheet" href="style/style.css">  
 
     </head>
     <body>
@@ -19,7 +19,7 @@
         </div>
 
         <div>
-            <ul class="ulContent">
+            <ul class="ulContent" id="accordion">
 
             </ul>
         </div>
@@ -120,39 +120,54 @@
                 closePopup();
              }
 
-
-
-
-
              function addNewDay(){
-                var newDay = new Object;
-                newDay.name = "Day " + (dataArr.length + 1);
-                newDay.exercises = new Array;
-                dataArr.push(newDay);
+                createNewDayObject();
+                clearDaySelector();
+                daySelectorConstructor();
                 jsonUpdateLocalStorage();
              }
 
 
+             function createNewDayObject(){
+                var newDay = new Object;
+                newDay.name = "Day " + (dataArr.length + 1);
+                newDay.exercises = new Array;
+                dataArr.push(newDay);
+             }
+
+
              function addNewExercise(){
-                if ($addInput.value){
+                if ($addInput.value){{
+                createNewExerciseObject();
+                jsonUpdateLocalStorage();
+                clearContent();
+                mainConstructor();
+                }
+             }
+
+             function createNewExerciseObject(){
                     var newExercise = {name:"",sets:"0",reps:"0",weight:"0"};
                     newExercise.name = $addInput.value;
                     $addInput.value = "";
                     dataArr[day].exercises.push(newExercise);
-                    jsonUpdateLocalStorage();
-                    mainConstructor();
                 } 
             }
 
 
             function saveData(){
+                updateArray();
+                jsonUpdateLocalStorage();
+            }
+
+
+            function updateArray(){
                 var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
                 var $dataInputs = $contentUl.querySelectorAll("input[type='number']");
+                console.log($dataInputs);
                 var newArr = new Array;
                 
-                console.log(newExercise);
                 
-                for(var i = 0; i <$labelNames.length; i++){
+                for(var i = 0; i < $labelNames.length; i++){
                     var newExercise = {name:"", sets:"", reps:"",weight:""};
 
                     newExercise.name = $labelNames[i].textContent;
@@ -162,12 +177,12 @@
                     newExercise.reps = $dataInputs[i*3+1].value;
  
                     newExercise.weight = $dataInputs[i*3+2].value;
-
+                    console.log(newExercise);
                     newArr.push(newExercise);
+                    console.log(newArr);
 
                 }
                 dataArr[day].exercises = newArr;
-                jsonUpdateLocalStorage();
 
             }
 
@@ -193,35 +208,56 @@
 // TODO: Separar Add day do objeto
 
              function daySelectorConstructor(){
-                for(var i = 0; i < dataArr.length + 1; i++){
-                    individualDayConstructor(i);
-                }
-             }
-
-             function individualDayConstructor(dayID){
                 var $ulDaySelector = document.querySelector(".daySelector");
-                var newElement = liConstructor();
-                newElement = addOnClick(newElement, dayID);
-                newElement = paragraphConstructor(newElement,dayID);
-                $ulDaySelector.appendChild(newElement);
+                for(var i = 0; i < dataArr.length; i++){
+                    var newDay = individualDayConstructor(i);
+                    $ulDaySelector.appendChild(newDay);
+                }
+                var addNewDayLi = addNewDayLiConstructor();
+                $ulDaySelector.appendChild(addNewDayLi);
              }
 
-             function paragraphConstructor(newElement,dayID){
-                var newParagraph = document.createElement("p");
-                if(dataArr[dayID]){
-                    newParagraph.textContent = dataArr[dayID].name;
-                }
-                else{
-                    newParagraph.textContent = "+";
-                }
-                
+
+             function addNewDayLiConstructor(){
+                var newElement = liConstructor();
+                var newParagraph = paragraphConstructor();
+                newParagraph = addTextContentToParagraph(newParagraph, "+");
+                newParagraph = createNewEventListener(newParagraph, "click", addNewDay);
                 newElement.appendChild(newParagraph);
                 return newElement;
              }
 
+             function individualDayConstructor(dayID){ 
+                var newElement = liConstructor();
+                newElement = addOnClick(newElement, dayID);
+                var newParagraph = paragraphConstructor();
+                newParagraph = addTextContentToParagraph(newParagraph , dataArr[dayID].name);
+                newElement.appendChild(newParagraph);
+                return newElement;
+             }
+
+
+             function paragraphConstructor(){
+                var newParagraph = document.createElement("p");
+                return newParagraph;
+             }
+
+             function addTextContentToParagraph(paragraph, newTextContent){
+                paragraph.textContent = newTextContent;
+                return paragraph;
+             }
+
+
+
              function addOnClick(newElement, dayID){
                 newElement.setAttribute("onclick","changeSelectedDay("+ dayID + ")");
                 return newElement;
+             }
+
+
+             function createNewEventListener(element , type , functionName){
+                element.addEventListener(type, functionName);
+                return element;
              }
 
 
@@ -231,13 +267,8 @@
 
             
              function changeSelectedDay(dayID){
-                if(dayID + 1 > dataArr.length){
-                    addNewDay();
-                    clearDaySelector();
-                    daySelectorConstructor();
-                    return;
-                }
                 day = dayID;
+                clearContent();
                 mainConstructor();
              }
 
@@ -248,7 +279,7 @@
 
              function mainConstructor(){
 
-                clearContent();
+                
 
                 if(!dataArr[day].exercises.length){
                     alert("Empty Day");
@@ -257,11 +288,16 @@
 
                 for(var i = 0 ; i < dataArr[day].exercises.length ; i++){
                     var newLi = liConstructor();
-                    var newLabel = labelConstructor (i);
+                    var newLabel = labelConstructor ();
+                    var newRadio = inputConstructor();
+                    
+                    accordionCreator(newLabel,newRadio,i);
+
                     newLi.appendChild(newLabel);
-                    var newRadio = radioConstructor();
                     newLi.appendChild(newRadio);
+
                     newContentDiv = contentDivConstructor(i);
+
                     newLi.appendChild(newContentDiv);
 
                     $contentUl.appendChild(newLi);
@@ -282,31 +318,36 @@
 
 // LABEL CONSTRUCTOR AND RADIO CONTRUCTOR NEED TO HAVE INCREMENTAL ID
 
-             function labelConstructor(dataIndex){
-                var id;
+             function labelConstructor(){
                 var newLabel = document.createElement("label");
-                newLabel.textContent = dataArr[day].exercises[dataIndex].name;
-                newLabel.setAttribute("for", id);
-                newLabel.setAttribute("class", "exerciseNameLabel");
-                id++;
                 return newLabel;
              }
 
 
-
-
-             function radioConstructor(){
-                var id = new Number;
+             function inputConstructor(){
                 var newRadio = document.createElement("input");
-                newRadio.setAttribute("type","radio");
-                newRadio.setAttribute("name","accordion");
-                newRadio.setAttribute("id", id);
-                id++;
-                newRadio.checked = true;
                 return newRadio;
              }
 
 
+
+             function accordionCreator(label, radio, id){
+                accordionLabelAtributesAddition(label,id);
+                accordionRadioAttributesAddition(radio,id);
+            }
+
+            function accordionLabelAtributesAddition(label, id){
+                label.setAttribute("for", id);
+                label.classList.add("exerciseNameLabel");
+                label.textContent = dataArr[day].exercises[id].name;
+            }
+
+            function accordionRadioAttributesAddition(radio, id){
+                radio.setAttribute("type","radio");
+                radio.setAttribute("name","accordion");
+                radio.setAttribute("id", id);
+                radio.checked = true;
+            }
 
 
              function contentDivConstructor(dataIndex){
@@ -317,10 +358,9 @@
                 for(var i = 0; i<3;i++){
 
 
-                    var newLabel = document.createElement("label");
+                    var newLabel = labelConstructor();
+                    var newInput = inputConstructor();
 
-
-                    var newInput = document.createElement("input");
                     newInput.setAttribute("type","number");
                     newInput.setAttribute("class", "inputValue");
                     newInput.addEventListener("input",saveData);
