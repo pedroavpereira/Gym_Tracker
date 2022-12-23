@@ -290,6 +290,10 @@
                     var newLi = liConstructor();
                     var newLabel = labelConstructor ();
                     var newRadio = inputConstructor();
+
+                    var newEditOptionsDiv = editOptionsDivConstructor();
+
+                    newLi.appendChild(newEditOptionsDiv);
                     
                     accordionCreator(newLabel,newRadio,i);
 
@@ -393,6 +397,50 @@
                 return contentDiv;
              }
              
+
+
+
+
+
+
+             function editOptionsDivConstructor(){
+                var newDiv = document.createElement("div");
+                newDiv.classList.add("editOptions");
+                var newUl = document.createElement("ul");
+                
+                for(var i = 0; i < 3; i++){
+                    var newLi = liConstructor();
+                    editOptionLiIconPlacer(newLi,i);
+                    newUl.appendChild(newLi);
+                  
+                }
+
+                newDiv.appendChild(newUl);
+                console.log(newDiv);
+                return newDiv;
+
+             }
+
+
+             function editOptionLiIconPlacer(element,index){
+                switch (index){
+                    case 0:
+                    element.textContent = "Up";
+                    element.addEventListener("click",function(){alert("Up")});
+                    break;
+                    case 1:
+                    element.textContent = "Down";
+                    element.addEventListener("click",function(){alert("Down")});
+                    break;
+                    case 2:
+                    element.textContent = "Remove";
+                    element.addEventListener("click",function(){alert("Remove")});
+                    break;
+
+                }
+
+             }
+
              //TODO: Remove Exercise button
              //TODO: Swap Exercise button
              //TODO: Add exit button for popup
