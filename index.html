@@ -24,7 +24,7 @@
             </ul>
         </div>
 
-        <div class="btnPopupDiv">
+        <div class="btnPopupDiv ">
             <button id="btnPopup">Add exercise</button>
         </div>
         
@@ -425,18 +425,30 @@
              function editOptionLiIconPlacer(element,index){
                 switch (index){
                     case 0:
-                    element.textContent = "Up";
-                    element.addEventListener("click",function(){alert("Up")});
+                    element.classList.add("svg_icon_up");
+                    element.addEventListener("click",function(){console.log(this.parentElement.parentElement.parentElement.parentElement)});
                     break;
                     case 1:
-                    element.textContent = "Down";
+                    element.classList.add("svg_icon_down");
                     element.addEventListener("click",function(){alert("Down")});
                     break;
                     case 2:
-                    element.textContent = "Remove";
-                    element.addEventListener("click",function(){alert("Remove")});
+                    element.classList.add("svg_icon_trash");
+                    element.addEventListener("click",editOptionsRemoveExercise);
                     break;
 
+                }
+
+                function editOptionsRemoveExercise(){
+                    var editOptionsUl = this.parentElement;
+                    
+                    var editOptionsDiv = editOptionsUl.parentElement;
+
+                    var exerciseLi = editOptionsDiv.parentElement;
+                    var exerciseUl = exerciseLi.parentElement;
+
+                    exerciseUl.removeChild(exerciseLi);
+                    saveData();
                 }
 
              }

@@ -73,7 +73,7 @@ SVG Icons - svgicons.sparkk.fr
     margin-top: 25px;
 }
 
-li{
+.ulContent > li , .daySelector li{
     border: 1px solid black;
     padding: 10px;
     
@@ -207,9 +207,22 @@ p{
   .editOptions li{
     font-size: 15px;
     font-weight: bolder;
-    border: none;
-    padding: 0px;
     list-style: none;
   }
 
 
+  .svg_icon_trash{
+    padding: 10px;
+    background: url(../svg/trash.svg);
+  }
+
+  
+  .svg_icon_up{
+    padding: 10px;
+    background: url(../svg/up_arrow.svg);
+  }
+  
+  .svg_icon_down{
+    padding: 10px;
+    background: url(../svg/down_arrow.svg);
+  }
