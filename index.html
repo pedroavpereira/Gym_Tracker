@@ -163,7 +163,6 @@
             function updateArray(){
                 var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
                 var $dataInputs = $contentUl.querySelectorAll("input[type='number']");
-                console.log($dataInputs);
                 var newArr = new Array;
                 
                 
@@ -177,9 +176,8 @@
                     newExercise.reps = $dataInputs[i*3+1].value;
  
                     newExercise.weight = $dataInputs[i*3+2].value;
-                    console.log(newExercise);
+
                     newArr.push(newExercise);
-                    console.log(newArr);
 
                 }
                 dataArr[day].exercises = newArr;
@@ -416,7 +414,6 @@
                 }
 
                 newDiv.appendChild(newUl);
-                console.log(newDiv);
                 return newDiv;
 
              }
@@ -426,11 +423,11 @@
                 switch (index){
                     case 0:
                     element.classList.add("svg_icon_up");
-                    element.addEventListener("click",function(){console.log(this.parentElement.parentElement.parentElement.parentElement)});
+                    element.addEventListener("click",function(){editOption_SwapClicked(this,1)});
                     break;
                     case 1:
                     element.classList.add("svg_icon_down");
-                    element.addEventListener("click",function(){alert("Down")});
+                    element.addEventListener("click",function(){editOption_SwapClicked(this,0)});
                     break;
                     case 2:
                     element.classList.add("svg_icon_trash");
@@ -446,12 +443,66 @@
 
                     var exerciseLi = editOptionsDiv.parentElement;
                     var exerciseUl = exerciseLi.parentElement;
-
-                    exerciseUl.removeChild(exerciseLi);
+                    if(confirm("Are you sure?")){
+                        exerciseUl.removeChild(exerciseLi);
+                    }
+                    
                     saveData();
+                    mainConstructor();
                 }
 
-             }
+                
+                function editOption_SwapClicked(element,value){
+                    var exerciseLi = editOptions_ReturnClickedLi(element);
+                    editOptionsSwapExercises(exerciseLi,value);
+                    saveData();
+                    clearContent();
+                    mainConstructor();
+                }
+
+                function editOptions_ReturnClickedLi(element){
+                    var editOptionsUl = element.parentElement;  
+                    var editOptionsDiv = editOptionsUl.parentElement;
+                    var exerciseLi = editOptionsDiv.parentElement;
+                    return exerciseLi;
+
+                    }
+                }
+
+                function editOptionsSwapExercises(element,option){
+                    var $existingExerciseLis = document.querySelectorAll(".ulContent > li");
+                    var $labelNames = $contentUl.querySelectorAll(".exerciseNameLabel");
+                    switch(option){
+                    // case 0 signifies a moveDown
+                        case 0:
+
+                            for(var i = 0; i < $existingExerciseLis.length; i++ ){
+                                if(element === $existingExerciseLis[i] && i !== $existingExerciseLis.length - 1){
+                                    var tempSwapLi = $labelNames[i+1].textContent;
+                                    var clickedSwapLi = $labelNames[i].textContent;
+                                    $labelNames[i+1].textContent =  $labelNames[i].textContent;
+                                    $labelNames[i].textContent = tempSwapLi;
+                                    
+                                }
+                            }
+                            break;
+                        case 1: 
+
+                                for(var i = 0; i < $existingExerciseLis.length; i++ ){
+                                        if(element === $existingExerciseLis[i] && i !== 0){
+                                            var tempSwapLi = $labelNames[i-1].textContent;
+                                            var clickedSwapLi = $labelNames[i].textContent;
+                                            $labelNames[i-1].textContent =  $labelNames[i].textContent;
+                                            $labelNames[i].textContent = tempSwapLi;
+                                            break;
+                                        }
+                                }
+                                break;
+                    }
+                }
+
+
+            
 
              //TODO: Remove Exercise button
              //TODO: Swap Exercise button
